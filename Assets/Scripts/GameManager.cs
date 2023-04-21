@@ -11,6 +11,9 @@ public class GameManager : GenericSingletonClass<GameManager>
     TMPro.TMP_Text textUI;
     [SerializeField]
     CameraController camera;
+
+    List<Transform> stackAnchors = new List<Transform>();
+    int currentAnchorIndex = 0;
     // Start is called before the first frame update
     void Awake()
     {
@@ -22,6 +25,14 @@ public class GameManager : GenericSingletonClass<GameManager>
     void Update()
     {
         
+    }
+
+    public void ChangeCameraFocus(int option)
+    {
+        currentAnchorIndex += option;
+        if (currentAnchorIndex > stackAnchors.Count - 1) currentAnchorIndex = 0;
+        if (currentAnchorIndex < 0) currentAnchorIndex = stackAnchors.Count - 1;
+        camera.SetTarget(stackAnchors[currentAnchorIndex]);
     }
 
     public void ShowInfoOnUI(Transform parent, BlockModel blockModel)
@@ -47,10 +58,12 @@ public class GameManager : GenericSingletonClass<GameManager>
         foreach (var key in stack.sortedStack.Keys)
         {
             var anchor = new GameObject(key);
+            stackAnchors.Add(anchor.transform);
             anchor.transform.position = Vector3.right * 20 * interation;
             GenerateJengaStack(anchor.transform, stack.sortedStack[key]);
             interation++;
         }
+        ChangeCameraFocus(0);
     }
 
     void GenerateJengaStack(Transform anchor, List<BlockModel> blockModels)
