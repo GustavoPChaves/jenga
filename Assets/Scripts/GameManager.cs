@@ -27,8 +27,8 @@ public class GameManager : GenericSingletonClass<GameManager>
     public void ShowInfoOnUI(Transform parent, BlockModel blockModel)
     {
         textUI.text = blockModel.Description;
-        camera.target = parent;
-        camera.transform.position = new Vector3(parent.position.x, camera.transform.position.y, camera.transform.position.z);
+        camera.SetTarget(parent);
+        
     }
     void GetData()
     {

@@ -4,12 +4,27 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] public Transform target;
-    public float radius = 10;
+    [SerializeField] Transform target;
+    [SerializeField]
+    public float radius = 30;
     void Update()
     {
         if (target == null) return;
-        var position = target.position + (Vector3.up * 10);
+        if (Input.GetMouseButton(1))
+        {
+            RotateAround(target);
+        }
+    }
+
+    public void SetTarget(Transform target)
+    {
+        this.target = target;
+        RotateAround(target);
+    }
+
+    void RotateAround(Transform target)
+    {
+        var position = target.position + (Vector3.up * 5);
         transform.position = position - (transform.forward * radius);
         transform.RotateAround(position, Vector3.up, Input.GetAxis("Mouse X"));
         transform.RotateAround(position, transform.right, Input.GetAxis("Mouse Y"));
