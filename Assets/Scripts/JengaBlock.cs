@@ -33,16 +33,9 @@ public class JengaBlock : MonoBehaviour
         }
         return glassMaterial;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0)){
+        if (Input.GetMouseButtonDown(1)){
             GameManager.Instance.ShowInfoOnUI(transform.parent ,blockModel);
         }
     }
