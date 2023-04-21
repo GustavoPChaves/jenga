@@ -12,6 +12,8 @@ public class GameManager : GenericSingletonClass<GameManager>
     [SerializeField]
     CameraController camera;
 
+    GameObject canvasPrefab;
+
     List<Transform> stackAnchors = new List<Transform>();
     int currentAnchorIndex = 0;
     // Start is called before the first frame update
@@ -19,6 +21,7 @@ public class GameManager : GenericSingletonClass<GameManager>
     {
         GetData();
         blockPrefab = Resources.Load("Prefabs/JengaBlock") as GameObject;
+        canvasPrefab = Resources.Load("Prefabs/CanvasWorldSpace") as GameObject;
     }
 
     // Update is called once per frame
@@ -60,6 +63,9 @@ public class GameManager : GenericSingletonClass<GameManager>
             var anchor = new GameObject(key);
             stackAnchors.Add(anchor.transform);
             anchor.transform.position = Vector3.right * 20 * interation;
+            var canvas = Instantiate(canvasPrefab);
+            canvas.transform.position = anchor.transform.position + Vector3.back * 5;
+            canvas.transform.GetChild(0).GetComponent<TMPro.TMP_Text>().text = key;
             GenerateJengaStack(anchor.transform, stack.sortedStack[key]);
             interation++;
         }
