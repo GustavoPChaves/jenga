@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public class CameraController : MonoBehaviour
 {
     Transform _target;
@@ -8,7 +9,12 @@ public class CameraController : MonoBehaviour
     float _selectionDistance;
     Vector3 _originalRigidBodyPosition, _originalScreenTargetPosition;
     Rigidbody _selectedRigidbody;
+    Camera camera;
 
+    private void Awake()
+    {
+        camera = GetComponent<Camera>();
+    }
     void Update()
     {
         MovementCamera();
@@ -64,7 +70,7 @@ public class CameraController : MonoBehaviour
     void PickObject(Rigidbody selectedRigidbody)
     {
         if (selectedRigidbody is null) return;
-        Vector3 mousePositionOffset = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, _selectionDistance)) - _originalScreenTargetPosition;
+        Vector3 mousePositionOffset = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, _selectionDistance)) - _originalScreenTargetPosition;
         var velocity = (_originalRigidBodyPosition + mousePositionOffset - selectedRigidbody.transform.position) * 50 * Time.deltaTime;
         velocity.y = 0;
         selectedRigidbody.velocity = velocity;
@@ -90,12 +96,12 @@ public class CameraController : MonoBehaviour
     Rigidbody GetRigidbodyOnMouseScreenPosition()
     {
         RaycastHit hit = new RaycastHit();
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit) && hit.collider.gameObject.GetComponent<Rigidbody>())
         {
             _originalRigidBodyPosition = hit.collider.transform.position;
             _selectionDistance = Vector3.Distance(ray.origin, hit.point);
-            _originalScreenTargetPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, _selectionDistance));
+            _originalScreenTargetPosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, _selectionDistance));
             return hit.collider.gameObject.GetComponent<Rigidbody>();
         }
         return null;
