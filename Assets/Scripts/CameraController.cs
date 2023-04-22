@@ -4,21 +4,40 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] Transform target;
-    [SerializeField]
-    public float radius = 30;
+    Transform target;
+    [SerializeField] float radius = 20;
 
     float selectionDistance;
     Vector3 originalRigidBodyPos, originalScreenTargetPosition;
-    private Rigidbody selectedRigidbody;
+    Rigidbody selectedRigidbody;
 
     void Update()
     {
-        if (target == null) return;
+        MovementCamera();
+        InteractWithObjects();
+    }
+
+    void FixedUpdate()
+    {
+        PickObject(selectedRigidbody);
+    }
+
+    public void SetTarget(Transform target)
+    {
+        this.target = target;
+        RotateAround(target);
+    }
+
+    void MovementCamera()
+    {
         if (Input.GetMouseButton(1))
         {
             RotateAround(target);
         }
+    }
+
+    void InteractWithObjects()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             selectedRigidbody = GetRigidbodyFromMouseClick();
@@ -29,25 +48,18 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    void PickObject(Rigidbody selectedRigibody)
     {
-        if (selectedRigidbody)
-        {
-            Vector3 mousePositionOffset = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, selectionDistance)) - originalScreenTargetPosition;
-            var velocity = (originalRigidBodyPos + mousePositionOffset - selectedRigidbody.transform.position) * 50 * Time.deltaTime;
-            velocity.y = 0;
-            selectedRigidbody.velocity = velocity;
-        }
-    }
-
-    public void SetTarget(Transform target)
-    {
-        this.target = target;
-        RotateAround(target);
+        if (selectedRigidbody is null) return;
+        Vector3 mousePositionOffset = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, selectionDistance)) - originalScreenTargetPosition;
+        var velocity = (originalRigidBodyPos + mousePositionOffset - selectedRigidbody.transform.position) * 50 * Time.deltaTime;
+        velocity.y = 0;
+        selectedRigidbody.velocity = velocity;
     }
 
     void RotateAround(Transform target)
     {
+        if (target == null) return;
         var position = target.position + (Vector3.up * 5);
         transform.position = position - (transform.forward * radius);
         transform.RotateAround(position, Vector3.up, Input.GetAxis("Mouse X"));
@@ -56,19 +68,14 @@ public class CameraController : MonoBehaviour
 
     Rigidbody GetRigidbodyFromMouseClick()
     {
-
         RaycastHit hit = new RaycastHit();
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit) && hit.collider.gameObject.GetComponent<Rigidbody>())
         {
-            if (hit.collider.gameObject.GetComponent<Rigidbody>())
-            {
-                originalRigidBodyPos = hit.collider.transform.position;
-                selectionDistance = Vector3.Distance(ray.origin, hit.point);
-                originalScreenTargetPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, selectionDistance));
-                return hit.collider.gameObject.GetComponent<Rigidbody>();
-            }
-            
+            originalRigidBodyPos = hit.collider.transform.position;
+            selectionDistance = Vector3.Distance(ray.origin, hit.point);
+            originalScreenTargetPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, selectionDistance));
+            return hit.collider.gameObject.GetComponent<Rigidbody>();
         }
         return null;
     }
