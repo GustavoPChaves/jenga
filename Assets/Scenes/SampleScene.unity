@@ -136,12 +136,12 @@ GameObject:
   - component: {fileID: 488823368}
   - component: {fileID: 488823367}
   - component: {fileID: 488823366}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!54 &488823366
 Rigidbody:
@@ -930,7 +930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textUI: {fileID: 1439949946}
-  camera: {fileID: 963194230}
+  cameraController: {fileID: 963194230}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,8 +943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7d1de81e8a86e4ca81aa2ee4537234, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  radius: 20
+  _radius: 20
 --- !u!1 &1410543101
 GameObject:
   m_ObjectHideFlags: 0
