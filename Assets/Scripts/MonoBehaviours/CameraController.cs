@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
     float _selectionDistance;
     Vector3 _originalRigidBodyPosition, _originalScreenTargetPosition;
     Rigidbody _selectedRigidbody;
-    Camera camera;
+    new Camera camera;
 
     private void Awake()
     {

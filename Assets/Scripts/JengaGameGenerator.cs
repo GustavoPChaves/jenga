@@ -67,12 +67,12 @@ public class JengaGameGenerator
                 block.GetComponent<JengaBlock>().SetBlockModel(blockModels[i + j]);
                 if (i % 2 == 0)
                 {
-                    block.transform.localPosition = new Vector3(j, i, 0);
+                    block.transform.localPosition = new Vector3(j + 0.1f, i, 0);
                 }
                 else
                 {
                     block.transform.Rotate(Vector3.up * i, 90);
-                    block.transform.localPosition = new Vector3(1f, i, j - 1f);
+                    block.transform.localPosition = new Vector3(1f + 0.1f, i, j - 1f);
                 }
             }
         }
