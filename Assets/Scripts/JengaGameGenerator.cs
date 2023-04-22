@@ -64,7 +64,7 @@ public class JengaGameGenerator
             for (int j = 0; j < rowCount; j++)
             {
                 var block = MonoBehaviour.Instantiate(_blockPrefab, anchor);
-                block.GetComponent<JengaBlock>().SetBlockType(blockModels[i + j]);
+                block.GetComponent<JengaBlock>().SetBlockModel(blockModels[i + j]);
                 if (i % 2 == 0)
                 {
                     block.transform.localPosition = new Vector3(j, i, 0);

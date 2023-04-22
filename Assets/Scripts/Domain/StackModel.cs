@@ -1,25 +1,47 @@
-[System.Serializable]
-public class BlockModel
-{
-    public int id;
-    public string subject;
-    public string grade;
-    public int mastery;
-    public string domain;
-    public string cluster;
-    public string standardid;
-    public string standarddescription;
-    public BlockType GetBlockType => (BlockType)mastery;
-    public string Description => "Grade Level: " + grade + "\n\nCluster: " + cluster + "\n\nStandard Description: " + standarddescription;
+using System.Collections.Generic;
+using UnityEngine;
 
-    public int CompareWith(BlockModel b)
+
+[System.Serializable]
+public class StackModel
+{
+    public BlockModel[] blocks;
+
+    public SortedDictionary<string, List<BlockModel>> sortedStack = new SortedDictionary<string, List<BlockModel>>();
+   
+    /// <summary>
+    /// Deconding JSON into StackModel
+    /// JsonUtility has a limitation with JSON lists, so adding a named key fix the error.
+    /// </summary>
+    /// <param name="json">JSON to decode</param>
+    /// <returns></returns>
+    public static StackModel FromJson(string json)
     {
-        int compareResult = 0;
-        compareResult = domain.CompareTo(b.domain);
-        if (compareResult != 0) return compareResult;
-        compareResult = cluster.CompareTo(b.cluster);
-        if (compareResult != 0) return compareResult;
-        return id.CompareTo(b.id);
+        return JsonUtility.FromJson<StackModel>("{\"blocks\":" + json + "}");
     }
-    
+
+    /// <summary>
+    /// Order the stack by grade, agrouping in a dictionary using grade as key, this structure facilitates the procedural stack generation
+    /// And sorting the list of blocks using the following priority: domain, cluster and id
+    /// </summary>
+    public void OrderStack()
+    {
+        for (int i = 0; i < blocks.Length; i++)
+        {
+            if(sortedStack.ContainsKey(blocks[i].grade)){
+                sortedStack[blocks[i].grade].Add(blocks[i]);
+            }
+            else
+            {
+                var newList = new List<BlockModel>();
+                newList.Add(blocks[i]);
+                sortedStack.Add(blocks[i].grade, newList);
+            }
+        }
+        foreach (var key in sortedStack.Keys)
+        {
+            sortedStack[key].Sort( (a, b) => a.CompareWith(b));
+        }
+    }
 }
+
